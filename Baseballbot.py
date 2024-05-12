@@ -13,7 +13,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 def handle_user_messages(msg) ->str:
     message = msg.lower()
     if message.startswith('!help'):
-        infoMessage = "Hello! I am Baseball Bot. I can help you with baseball stats.\n\nType !stats <player name> <batter/pitcher> to get all their stats\nType !stats <player name> <batter/pitcher> <name of stat> to get that stat of that player\nType !stats <player name> <name of stat> <year> to get that stat of that player for that year\n\nType !info to see this message again"
+        infoMessage = "Hello! I am Baseball Bot. I can help you with baseball stats.\n\nType !stats <player name> <batter/pitcher> to get all their stats\nType !stats <player name> <batter/pitcher> <name of stat> to get that stat of that player\nType !stats <player name> <name of stat> <year> to get that stat of that player for that year\n\nType !help to see this message again"
         return infoMessage
     elif message.startswith('!stats'):
         splitMsg = message.split(' ')
