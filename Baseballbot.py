@@ -13,8 +13,36 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 def handle_user_messages(msg) ->str:
     message = msg.lower()
     if message.startswith('!help'):
-        infoMessage = "Hello! I am Baseball Bot. I can help you with baseball stats.\n\nType !stats <player name> <batter/pitcher> to get all their stats\nType !stats <player name> <batter/pitcher> <name of stat> to get that stat of that player\nType !stats <player name> <name of stat> <year> to get that stat of that player for that year\n\nType !help to see this message again"
+        infoMessage = "Hello! I am Baseball Bot. I can help you with baseball stats.\n\nType !stats <player name> <batter/pitcher> to get all their stats\nType !stats <player name> <batter/pitcher> <name of stat> to get that stat of that player\nType !stats <player name> <name of stat> <year> to get that stat of that player for that year\n\nType !standings <American/National> to see the current standings\n\nType !score <Team Name> to get the most recent score of tha team\n\nType !help to see this message again"
         return infoMessage
+    elif message.startswith('!score'):
+        splitMsg = message.split(' ')
+        splitMsg.pop(0)
+
+        splitMsg[0] = splitMsg[0].capitalize()
+        teamIds = {'Angels': 108, 'Diamondbacks': 109, 'Orioles': 110, 'Red Sox': 111, 'Cubs': 112, 'Reds': 113, 'Indians': 114, 'Rockies': 115, 'Tigers': 116, 'Astros': 117, 'Royals': 118, 'Dodgers': 119, 'Nationals': 120, 'Mets': 121, 'Atheletics': 133, 'Pirates': 134, 'Padres': 135, 'Mariners': 136, 'Giants': 137, 'Cardinals': 138, 'Rays': 139, 'Rangers': 140, 'Blue Jays': 141, 'Twins': 142, 'Phillies': 143, 'Braves': 144, 'White Sox': 145, 'Marlins': 146, 'Yankees': 147, 'Brewers': 158}
+        currentTeamId = teamIds.get(splitMsg[0])
+
+        gameID = statsapi.last_game(currentTeamId)
+        lineScore = statsapi.linescore(gameID)
+        return '`' + lineScore + '`'
+    elif message.startswith('!standings'):
+        splitMsg = message.split(' ')
+        splitMsg.pop(0)
+        # print(splitMsg)
+
+        today = date.today()
+        todayStr = today.strftime("%d/%m/%Y")
+
+        standings = statsapi.standings(date=todayStr)
+        splitLeagues = standings.split('National League East')
+
+        if 'american' in splitMsg or 'American' in splitMsg:
+            return '`' + splitLeagues[0] + '`'
+        elif 'national' in splitMsg or 'National' in splitMsg:
+            return '`' + 'National League East' + splitLeagues[1] + '`'
+
+        return splitLeagues[0]
     elif message.startswith('!stats'):
         splitMsg = message.split(' ')
         
@@ -245,6 +273,8 @@ def handle_user_messages(msg) ->str:
             return f"{name} has {certainStat} {statToGet}"
         else: 
             return printout
+    else:
+        return "Invalid command. Type !help to see all available commands"
     
 async def processMessage(message, user_message):
     try:
