@@ -11,6 +11,7 @@ from quotes import quoteboard
 keys = open("keys.txt", "r")
 token = keys.readline().strip()
 channelId = int(keys.readline().strip())
+weatherApiKey = keys.readline().strip()
 keys.close()
 
 intents = discord.Intents.default()
@@ -110,7 +111,6 @@ def handle_user_messages(msg, id) ->str:
             die = splitMsg[0][1:]
             return f"You rolled a {splitMsg[0]} and got a {randrange(int(die) + 1)}"
     elif message.startswith('!weather'):
-        apiKey = 'a12cc50ea3a50599451ea185977a2bb2'
         baseUrl = "http://api.openweathermap.org/data/2.5/weather?"
         splitMsg = message.split(' ')
         splitMsg.pop(0)
@@ -118,7 +118,7 @@ def handle_user_messages(msg, id) ->str:
             splitMsg[i] = splitMsg[i].capitalize()
         city = " ".join(splitMsg)
 
-        complete_url = baseUrl + "appid=" + apiKey + "&q=" + city
+        complete_url = baseUrl + "appid=" + weatherApiKey + "&q=" + city
         response = requests.get(complete_url)
         data = response.json()
 
